@@ -1,0 +1,177 @@
+name: CI
+
+on:
+  workflow_dispatch:
+    inputs:
+      force-release:
+        description: The type of release to force (patch, minor, major, "")
+        required: false
+        default: ""
+        type: choice
+        options:
+          - ""
+          - patch
+          - minor
+          - major
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [20, 22, 24]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm test
+
+  demo:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [20, 22, 24]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: demo
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: demo
+          sparse-checkout-cone-mode: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npx tiged pfaciana/ste-rules#${{ github.sha }} scripts/ste-rules
+      - run: npm test
+
+  get-release-tag:
+    needs: [test, demo]
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    outputs:
+      tag-name: ${{ steps.get_tag_name.outputs.tag-name }}
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
+          fetch-tags: true  # Fetch all tags
+
+      - name: Sync Versions
+        id: sync_versions
+        uses: pfaciana/version-sync@v1
+        with:
+          json-files: package.json
+          release-type: patch
+          force-release: ${{ github.event.inputs.force-release || '' }}
+          commit-message: Update version to {version}
+          tag-message: Release {tag}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEBUG_MODE: ${{ vars.DEBUG_MODE || '0' }}
+
+      - name: Get tag
+        id: get_tag_name
+        uses: pfaciana/get-tag-for-next-release@v1
+        with:
+          match-tag: ${{ steps.sync_versions.outputs.tag-name || '' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEBUG_MODE: ${{ vars.DEBUG_MODE || '0' }}
+
+  create-release:
+    needs: get-release-tag
+    if: needs.get-release-tag.outputs.tag-name != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
+          fetch-tags: true  # Fetch all tags
+          ref: ${{ github.ref }} # Get the latest code updated from the previous job
+
+      - name: Create Changelog
+        id: create_changelog
+        uses: pfaciana/conventional-commits-changelog@v1
+        with:
+          file: CHANGELOG.md
+          desc-header: true
+          options: |
+            {"types":{"feat_add":"📢 Added","feat_change":"⚡ Changed","feat_remove":"🗑️ Removed","fix":"🐞 Fixed"},"notice":{"keys":{"🚨 BREAKING CHANGES":"/^BREAKING[ -]CHANGE$/"}}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEBUG_MODE: ${{ vars.DEBUG_MODE || '0' }}
+
+      - name: Create Developer Changelog
+        id: create_developer_changelog
+        uses: pfaciana/conventional-commits-changelog@v1
+        with:
+          file: DEVELOPER_CHANGELOG.md
+          desc-header: true
+          options: |
+            {"types":{"feat_add":"📢 Added","feat_change":"⚡ Changed","feat_remove":"🗑️ Removed","fix":"🐞 Fixed","docs":"📚 Documented","test":"🧪 Tested","build":"📦 Built","ci":"🔗 CI","refactor":"🏗️ Refactored","style":"🎨 Styled","perf":"🚀 Performance","chore":"🧹 Chores"},"notice":{"keys":{"🚨 BREAKING CHANGES":"/^BREAKING[ -]CHANGE$/"}}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEBUG_MODE: ${{ vars.DEBUG_MODE || '0' }}
+
+      - name: Create Release Changelog
+        id: create_release_changelog
+        uses: pfaciana/conventional-commits-changelog@v1
+        with:
+          options: |
+            {"types":{"feat_add":"📢 Added","feat_change":"⚡ Changed","feat_remove":"🗑️ Removed","fix":"🐞 Fixed","docs":"📚 Documented","test":"🧪 Tested","build":"📦 Built","ci":"🔗 CI","refactor":"🏗️ Refactored","style":"🎨 Styled","perf":"🚀 Performance","chore":"🧹 Chores"},"notice":{"keys":{"🚨 BREAKING CHANGES":"/^BREAKING[ -]CHANGE$/"}},"onlyFirst":true,"onlyBody":true}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEBUG_MODE: ${{ vars.DEBUG_MODE || '0' }}
+
+      - name: Create Release w/ Asset
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ format('Release {0}', needs.get-release-tag.outputs.tag-name) }}
+          tag_name: ${{ needs.get-release-tag.outputs.tag-name }}
+          body: ${{ steps.create_release_changelog.outputs.changelog || '' }}
+          files: |
+            CHANGELOG.md
+            DEVELOPER_CHANGELOG.md
+
+  # npm trusted publishing: no token, GitHub proves the workflow identity through OIDC.
+  # One-time setup on npmjs.com, package settings, Trusted Publisher: this repo, this file name.
+  # The settings page exists only after the first publish, so release one is manual: `npm publish` from a machine.
+  publish:
+    needs: [get-release-tag, create-release]
+    if: needs.get-release-tag.outputs.tag-name != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }} # The version bump from get-release-tag is on master now
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Update npm
+        run: npm install -g npm@latest # Trusted publishing needs npm 11.5.1 or later
+
+      - name: Publish
+        run: npm publish --access public

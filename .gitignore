@@ -1,3 +1,21 @@
+.idea
+.agents
+.claude
+.codex
+.obsidian
+.playwright
+.playwright-cli
+.repos
+.run
+.mcp.json
+.vscode
+package-lock.json
+pnpm-lock.yaml
+composer.lock
+blueprint.json
+AGENTS.md
+CLAUDE.md
+
 # Logs
 logs
 *.log
@@ -141,3 +159,5 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+
+/demo/scripts/

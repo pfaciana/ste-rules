@@ -1,0 +1,20 @@
+{
+	"name": "ste-rules-demo",
+	"version": "0.1.0",
+	"description": "Example consumer of ste-rules: every match in a text file, one per line.",
+	"license": "MIT",
+	"type": "module",
+	"imports": {
+		"#ste-rules": "./scripts/ste-rules/index.js"
+	},
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"test": "node --test",
+		"test:watch": "node --test --watch",
+		"ste-rules:setup": "npx tiged pfaciana/ste-rules scripts/ste-rules",
+		"ste-rules:update": "npx tiged pfaciana/ste-rules scripts/ste-rules --force"
+	},
+	"private": true
+}

@@ -1,0 +1,111 @@
+// Lists for the passive voice check.
+// Source: vale-stuffbucket internal/rules/participles.go, MIT. beVerbs 8, irregular 61, notParticiples 20.
+
+export const beVerbs = [
+	'am',
+	'is',
+	'are',
+	'was',
+	'were',
+	'be',
+	'been',
+	'being'
+]
+
+/** past participles that do not end in -ed */
+export const irregular = [
+	'beaten',
+	'become',
+	'begun',
+	'bent',
+	'bound',
+	'broken',
+	'brought',
+	'built',
+	'bought',
+	'caught',
+	'chosen',
+	'come',
+	'cut',
+	'dealt',
+	'done',
+	'drawn',
+	'driven',
+	'eaten',
+	'fallen',
+	'fed',
+	'felt',
+	'found',
+	'frozen',
+	'given',
+	'gone',
+	'grown',
+	'held',
+	'hidden',
+	'hit',
+	'hurt',
+	'kept',
+	'known',
+	'laid',
+	'led',
+	'left',
+	'lost',
+	'made',
+	'meant',
+	'met',
+	'paid',
+	'put',
+	'read',
+	'run',
+	'said',
+	'seen',
+	'sent',
+	'set',
+	'shown',
+	'shut',
+	'sold',
+	'spent',
+	'split',
+	'spread',
+	'sung',
+	'taken',
+	'taught',
+	'told',
+	'thrown',
+	'understood',
+	'worn',
+	'written'
+]
+
+/** words that end in -ed but are not participles */
+export const notParticiples = [
+	'need',
+	'indeed',
+	'speed',
+	'proceed',
+	'exceed',
+	'embed',
+	'feed',
+	'seed',
+	'bed',
+	'red',
+	'bred',
+	'shed',
+	'sled',
+	'shred',
+	'wed',
+	'fled',
+	'bled',
+	'sped',
+	'hundred',
+	'sacred'
+]
+
+// a contraction, then the be-verb inside it. "it's done" reads as "is done". Ours. The lookup key keeps the
+// straight apostrophe, so the caller folds a curly one first
+export const contractions = {
+	"i'm": 'am',
+	"it's": 'is', "that's": 'is', "there's": 'is', "here's": 'is', "what's": 'is', "he's": 'is', "she's": 'is', "who's": 'is',
+	"isn't": 'is', "aren't": 'are', "wasn't": 'was', "weren't": 'were',
+	"they're": 'are', "we're": 'are', "you're": 'are',
+}
