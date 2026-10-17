@@ -132,6 +132,7 @@ A rule with a knob takes an options object as the second argument. Every knob ha
 ```js
 maxWordsPerSentence(text, { limit: 25 })            // default 20
 noAmbiguousAbbreviations(text, { allow: ['CDP'] })  // more abbreviations to pass
+noPhrasalVerbs(text, { allow: ['spin up'] })        // entries to pass, such as a project's own terms
 ```
 
 ### Several Rules
@@ -169,11 +170,11 @@ One function per rule. Each one reads one unit: the whole text, a paragraph, a s
 | Function                   | Reads    | Match when                                        |
 |----------------------------|----------|---------------------------------------------------|
 | `approvedModals`           | sentence | a modal other than can, will, must                |
-| `noPhrasalVerbs`           | sentence | a phrase with a shorter form                      |
-| `noWordyPhrases`           | sentence | a wordy phrase with a shorter form                |
-| `plainWords`               | sentence | a formal word with a plain form                   |
+| `noPhrasalVerbs`           | sentence | a phrase with a shorter form. `allow`             |
+| `noWordyPhrases`           | sentence | a wordy phrase with a shorter form. `allow`       |
+| `plainWords`               | sentence | a formal word with a plain form. `allow`          |
 | `noUnnamedAuthority`       | sentence | "experts say" or a similar phrase                 |
-| `noNeedlessWords`          | sentence | a slop, restatement, marketing, or filler word    |
+| `noNeedlessWords`          | sentence | slop, restatement, marketing, or filler. `allow`  |
 | `oneHedge`                 | sentence | over one hedge word. `limit`                      |
 | `noPreamble`               | text     | an opener or a closing remark                     |
 

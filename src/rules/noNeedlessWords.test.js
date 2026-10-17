@@ -209,3 +209,17 @@ test('no argument returns an empty array', () => assert.deepEqual(noNeedlessWord
 test('null returns an empty array', () => assert.deepEqual(noNeedlessWords(null), []))
 test('a number returns an empty array', () => assert.deepEqual(noNeedlessWords(123), []))
 test('a second argument changes nothing', () => assert.deepEqual(noNeedlessWords('We delve.', { limit: 0 }), noNeedlessWords('We delve.')))
+
+// The allow option drops the listed entries, case folded, and keeps the rest.
+const allowed = [
+	// text                                allow            matches
+	['A robust estimator.',                ['robust'],      []],
+	['A robust estimator.',                ['Robust'],      []],
+	['We delve into a robust estimator.',  ['robust'],      [[3, 'delve']]],
+	['A robust estimator.',                [],              [[2, 'robust']]],
+	['A robust estimator.',                null,            [[2, 'robust']]],
+]
+
+for (const [text, allow, matches] of allowed) {
+	test(`allow ${JSON.stringify(allow)} for "${text}"`, () => assert.deepEqual(noNeedlessWords(text, { allow }).map(m => [m.index, m.text]), matches))
+}

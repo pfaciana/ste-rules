@@ -69,11 +69,11 @@ These rules match a word or phrase from a list. A list can miss a phrase. A list
 | Function                   | Inputs   | Options                 | Additional Result Keys                                                       |
 |----------------------------|----------|-------------------------|------------------------------------------------------------------------------|
 | `approvedModals`           | sentence |                         | `modal: string`, `alternatives: string[]`                                    |
-| `noPhrasalVerbs`           | sentence |                         | `alternatives: string[]`                                                     |
-| `noWordyPhrases`           | sentence |                         | `alternative: string`                                                        |
-| `plainWords`               | sentence |                         | `alternative: string`                                                        |
+| `noPhrasalVerbs`           | sentence | `allow?: string[] = []` | `alternatives: string[]`                                                     |
+| `noWordyPhrases`           | sentence | `allow?: string[] = []` | `alternative: string`                                                        |
+| `plainWords`               | sentence | `allow?: string[] = []` | `alternative: string`                                                        |
 | `noUnnamedAuthority`       | sentence |                         | `phrase: string`                                                             |
-| `noNeedlessWords`          | sentence |                         | `phrase: string`, `kind: 'slop' \| 'restatement' \| 'marketing' \| 'filler'` |
+| `noNeedlessWords`          | sentence | `allow?: string[] = []` | `phrase: string`, `kind: 'slop' \| 'restatement' \| 'marketing' \| 'filler'` |
 | `oneHedge`                 | sentence | `limit?: number = 1`    | `count: number`, `limit: number`, `hedges: string[]`                         |
 | `noPreamble`               | text     |                         | `phrase: string`, `place: 'start' \| 'end'`                                  |
 
@@ -111,6 +111,7 @@ Notes:
 - `oneHedge` gives one match per sentence over the limit. `text` is the span from the first extra hedge to the last.
 - `noPreamble` checks the first paragraph against the openers, and the last paragraph against the closers. It gives at most two matches, one per place. A one-paragraph text is checked against the openers only.
 - `approvedModals` skips a capital "May" that is the month: after another word in the sentence, "on May 5", or at the sentence start before a number, "May 5 is the date".
+- `allow` drops the listed entries from the rule, case folded. A project keeps its own terms: `noPhrasalVerbs(text, { allow: ['spin up', 'shut down'] })` passes "spin up" and flags the rest.
 - Some entries sit in more than one list. `may`, `might`, and `could` are a modal and a hedge, so `approvedModals` and `oneHedge` both flag them. `prior to` is in the lists of `noPhrasalVerbs`, `noWordyPhrases`, and `plainWords`, so all three flag it. A caller that runs several rules can get several matches on one span.
 
 ## Heuristic Rules

@@ -219,3 +219,18 @@ test('an extra options argument changes nothing', () => {
 	assert.deepEqual(noPhrasalVerbs('Please carry out now.', { max: 0 }), plain)
 	assert.deepEqual(noPhrasalVerbs('Please carry out now.', 'wrong type'), plain)
 })
+
+// The allow option drops the listed entries, case folded, and keeps the rest.
+const allowed = [
+	// text                                allow            matches
+	['Please shut down now.',              ['shut down'],   []],
+	['Please shut down now.',              ['Shut Down'],   []],
+	['Shut down, then switch off.',        ['shut down'],   [[16, 'switch off']]],
+	['Please shut down now.',              [],              [[7, 'shut down']]],
+	['Please shut down now.',              null,            [[7, 'shut down']]],
+	['Please shut down now.',              'shut down',     [[7, 'shut down']]],
+]
+
+for (const [text, allow, matches] of allowed) {
+	test(`allow ${JSON.stringify(allow)} for "${text}"`, () => assert.deepEqual(noPhrasalVerbs(text, { allow }).map(m => [m.index, m.text]), matches))
+}

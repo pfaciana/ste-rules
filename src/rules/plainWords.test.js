@@ -87,3 +87,16 @@ for (const [name, text, matches] of cases) {
 		}
 	})
 }
+// The allow option drops the listed entries, case folded, and keeps the rest.
+const allowed = [
+	// text                                allow            matches
+	['We utilize the cache.',              ['utilize'],     []],
+	['We utilize the cache.',              ['Utilize'],     []],
+	['We utilize it prior to the run.',    ['utilize'],     [[14, 'prior to']]],
+	['We utilize the cache.',              [],              [[3, 'utilize']]],
+	['We utilize the cache.',              null,            [[3, 'utilize']]],
+]
+
+for (const [text, allow, matches] of allowed) {
+	test(`allow ${JSON.stringify(allow)} for "${text}"`, () => assert.deepEqual(plainWords(text, { allow }).map(m => [m.index, m.text]), matches))
+}
