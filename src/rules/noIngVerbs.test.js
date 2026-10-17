@@ -14,6 +14,7 @@ const cases = [
 	['a curly apostrophe',                      'It’s running.',                      [[0, 'It’s running', 'running']]],
 	["a possessive is not a be-verb",           "The tool's running cost is high.",        []],
 	['is missing, is pending, are working',     'The file is missing. The job is pending. The tests are working.', []],
+	['is ongoing, is incoming, is underlying', 'The work is ongoing. The request is incoming. The cause is underlying.', []],
 	['an adjective then a real progressive',    'It is missing. It is failing.',           [[18, 'is failing', 'failing']]],
 	['am',                                      'I am waiting for the build.',             [[2, 'am waiting', 'waiting']]],
 	['are',                                     'The tests are failing.',                  [[10, 'are failing', 'failing']]],

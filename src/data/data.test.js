@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { beVerbs, irregular, notParticiples, contractions } from './participles.js'
+import { beVerbs, irregular, notParticiples, edAdjectives, contractions } from './participles.js'
 import { ingNouns } from './ingNouns.js'
 import { hedges } from './hedges.js'
 import { slop, restatements, marketing, fillers } from './needlessWords.js'
@@ -19,6 +19,7 @@ const lists = [
 	['beVerbs',         beVerbs,                   8,    'was'],
 	['irregular',       irregular,                 60,   'written'],
 	['notParticiples',  notParticiples,            20,   'need'],
+	['edAdjectives',    edAdjectives,              10,   'limited'],
 	['contractions',    Object.keys(contractions), 14,   "it's"],
 	['ingNouns',        ingNouns,                  35,   'string'],
 	['hedges',          hedges,                    13,   'possibly'],

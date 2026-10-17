@@ -1,5 +1,6 @@
 // Words that end in -ing but are nouns or function words, not verb forms.
 // Source: vale-stuffbucket internal/rules/ing_forms.go, MIT. 38 entries. Plus 16 -ing adjectives, ours.
+// Plus 3 nouns and 5 adjectives from agent-ste src/ste/checks.gleam, MIT, picked by a count over 402,000 words of prose.
 
 export const ingNouns = [
 	'bearing',
@@ -40,6 +41,9 @@ export const ingNouns = [
 	'according',
 	'regarding',
 	'sing',
+	'anything',
+	'spelling',
+	'wording',
 	// -ing adjectives that follow a be-verb, ours: "is missing", "is pending"
 	'interesting',
 	'boring',
@@ -56,5 +60,10 @@ export const ingNouns = [
 	'surprising',
 	'annoying',
 	'amazing',
-	'exciting'
+	'exciting',
+	'ongoing',
+	'upcoming',
+	'incoming',
+	'outgoing',
+	'underlying'
 ]

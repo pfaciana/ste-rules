@@ -113,7 +113,10 @@ const cases = [
 	['an adjective reads as passive',   'The door is closed.',                   [[9, 'is closed', false]]],
 	['tired reads as passive',          'The team is tired.',                    [[9, 'is tired', false]]],
 	['used reads as passive',           'It is used.',                           [[3, 'is used', false]]],
-	['limited reads as passive',        'It is limited.',                        [[3, 'is limited', false]]],
+	['limited is on the adjective list', 'It is limited.',                       []],
+	['deprecated is on the adjective list', 'The API is deprecated.',            []],
+	['related is on the adjective list', 'It is related to the cache.',          []],
+	['miss: an adjective-list word with an agent', 'It was deprecated by the team.', []],
 	['gone is an irregular participle', 'Deleted files are gone.',               [[14, 'are gone', false]]],
 	['set is an irregular participle',  'The isDeleted flag is set.',            [[19, 'is set', false]]],
 	// agents

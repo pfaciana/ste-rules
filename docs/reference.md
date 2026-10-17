@@ -164,7 +164,7 @@ What each one reads:
 Limits:
 
 - `noIngVerbs`: an -ing verb with no be-verb before it passes.
-- `activeVoice` and `passiveWithNamedAgent`: "is closed" the adjective reads as passive.
+- `activeVoice` and `passiveWithNamedAgent`: "is closed" the adjective reads as passive. A list of -ed adjectives covers the common cases, "is limited", "is deprecated". A listed word then passes with an agent too: "was deprecated by the team".
 - `actionAsVerb`: a concrete noun list covers the common false hits.
 - `clearPronouns`: a bare pronoun mid-sentence passes.
 - `noPerfectTense`: a noun right after the past participle passes, as in "We have received approval".
