@@ -132,6 +132,7 @@ A rule with a knob takes an options object as the second argument. Every knob ha
 ```js
 maxWordsPerSentence(text, { limit: 25 })            // default 20
 noAmbiguousAbbreviations(text, { allow: ['CDP'] })  // more abbreviations to pass
+noPhrasalVerbs(text, { allow: ['spin up'] })        // entries to pass, such as a project's own terms
 ```
 
 ### Several Rules
@@ -154,13 +155,14 @@ One function per rule. Each one reads one unit: the whole text, a paragraph, a s
 
 ### Counts
 
-| Function                | Reads     | Match when                                    |
-|-------------------------|-----------|-----------------------------------------------|
-| `noSemicolons`          | text      | a `;` is found                                |
-| `maxWordsPerSentence`   | sentence  | over 20 words. `limit`                        |
-| `maxWordsPerParagraph`  | paragraph | over 50 words. `limit`                        |
-| `maxParagraphs`         | text      | over 4 paragraphs. `limit`                    |
-| `maxWordsLastParagraph` | text      | the last paragraph has over 10 words. `limit` |
+| Function                   | Reads     | Match when                                    |
+|----------------------------|-----------|-----------------------------------------------|
+| `noSemicolons`             | text      | a `;` is found                                |
+| `maxWordsPerSentence`      | sentence  | over 20 words. `limit`                        |
+| `maxWordsPerParagraph`     | paragraph | over 50 words. `limit`                        |
+| `maxSentencesPerParagraph` | paragraph | over 6 sentences. `limit`                     |
+| `maxParagraphs`            | text      | over 4 paragraphs. `limit`                    |
+| `maxWordsLastParagraph`    | text      | the last paragraph has over 10 words. `limit` |
 
 `maxWordsLastParagraph` serves one house rule: end with the next step, in one short line. The function checks the length. It cannot check the meaning. A person, or a prompt rule, checks that the line names a next step.
 
@@ -169,24 +171,27 @@ One function per rule. Each one reads one unit: the whole text, a paragraph, a s
 | Function                   | Reads    | Match when                                        |
 |----------------------------|----------|---------------------------------------------------|
 | `approvedModals`           | sentence | a modal other than can, will, must                |
-| `noPhrasalVerbs`           | sentence | one of 87 phrases with a shorter form             |
-| `noUnnamedAuthority`       | sentence | "experts say" or one of 37 more phrases           |
-| `noAmbiguousAbbreviations` | sentence | a run of capitals not in the allow list. `allow`  |
-| `noNeedlessWords`          | sentence | a slop, restatement, marketing, or filler word    |
+| `noPhrasalVerbs`           | sentence | a phrase with a shorter form. `allow`             |
+| `noWordyPhrases`           | sentence | a wordy phrase with a shorter form. `allow`       |
+| `plainWords`               | sentence | a formal word with a plain form. `allow`          |
+| `noUnnamedAuthority`       | sentence | "experts say" or a similar phrase                 |
+| `noNeedlessWords`          | sentence | slop, restatement, marketing, or filler. `allow`  |
 | `oneHedge`                 | sentence | over one hedge word. `limit`                      |
+| `noPreamble`               | text     | an opener or a closing remark                     |
 
 ### Heuristics
 
-| Function                | Reads    | Match when                                                |
-|-------------------------|----------|-----------------------------------------------------------|
-| `noIngVerbs`            | sentence | a be-verb, then an -ing word                              |
-| `activeVoice`           | sentence | a be-verb, then a past participle                         |
-| `passiveWithNamedAgent` | sentence | a passive, then "by" and a name                           |
-| `actionAsVerb`          | sentence | a weak verb, then a -tion noun                            |
-| `noStackedAuxiliaries`  | sentence | two auxiliaries in a row, except will be, can be, must be |
-| `clearPronouns`         | sentence | the sentence opens with a bare pronoun                    |
-| `noPreamble`            | text     | an opener or a closing remark                             |
-| `oneInstruction`        | sentence | "and then", or ", then" with no condition word first      |
+| Function                   | Reads    | Match when                                                |
+|----------------------------|----------|-----------------------------------------------------------|
+| `noIngVerbs`               | sentence | a be-verb, then an -ing word                              |
+| `activeVoice`              | sentence | a be-verb, then a past participle                         |
+| `passiveWithNamedAgent`    | sentence | a passive, then "by" and a name                           |
+| `actionAsVerb`             | sentence | a weak verb, then a -tion, -ment, -ance, or -ence noun    |
+| `noStackedAuxiliaries`     | sentence | two auxiliaries in a row, except will be, can be, must be |
+| `noPerfectTense`           | sentence | have, has, or had, then a past participle                 |
+| `clearPronouns`            | sentence | the sentence opens with a bare pronoun                    |
+| `noAmbiguousAbbreviations` | sentence | a run of capitals not in the allow list. `allow`          |
+| `oneInstruction`           | sentence | "and then", or ", then" with no condition word first      |
 
 ### Opt-in
 
@@ -200,7 +205,7 @@ A name after the check, such as `limit` or `allow`, is the option that tunes the
 
 ## False Hits
 
-The eight heuristics read word patterns, not grammar. There is no parser and no tagger. So each one guesses, and a guess can be wrong in two ways.
+The heuristics read word patterns, not grammar. There is no parser and no tagger. So each one guesses, and a guess can be wrong in two ways.
 
 Over-flags, a match on good text:
 
@@ -208,6 +213,7 @@ Over-flags, a match on good text:
 - `noNeedlessWords` flags a slop word in a quote or a name.
 - `clearPronouns` flags "This" at the start of a short bullet, where the referent is the bullet above.
 - `noAmbiguousAbbreviations` reads a sentence in capitals as a shout and skips it whole, so an abbreviation inside it passes.
+- `noPerfectTense` reads a name after "We've" as a verb. "We've Ted to thank" is flagged.
 
 Misses, no match on bad text:
 
@@ -215,12 +221,15 @@ Misses, no match on bad text:
 - `clearPronouns` reads the first word only. A bare "it" in the middle of a sentence passes.
 - `noPreamble` and `noUnnamedAuthority` know their lists. A new phrase passes.
 - `activeVoice` starts at a be-verb only. "It got fixed" passes.
+- `noPerfectTense` needs a word such as "the" after the verb. "We have received approval" passes.
 
-Treat a heuristic match as a hint, not a verdict. Give it a lower level than a count rule, or let a person confirm it. The counts and the word lists have no false hits: a count is exact, and a phrase is in the list or not.
+Treat a heuristic match as a hint, not a verdict. Give it a lower level than a count rule, or let a person confirm it. Only a count is exact. A word list flags every listed word, so it also flags a listed word in a quote or a name.
+
+Some lists overlap. `may` is a modal and a hedge. `prior to` is a phrasal verb, a wordy phrase, and a formal word. One span can get a match from each rule that lists it.
 
 ## Your Own Rules
 
-The rules are built on four text helpers. They are exported too, so a new rule takes a few lines.
+The rules are built on six text helpers. They are exported too, so a new rule takes a few lines.
 
 ```js
 import { sentences, sentenceAt, paragraphs, words, wordCount, phrases } from 'ste-rules'

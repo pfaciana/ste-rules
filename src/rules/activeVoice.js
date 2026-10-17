@@ -1,10 +1,10 @@
 // Use the active voice. A be-verb, an optional -ly adverb, then a past participle is passive.
 // Ported from vale-stuffbucket internal/rules/passive_voice.go, MIT, with its three lists in participles.js.
 // The named-agent variant rides on top: a passive followed by "by" names an agent, which is the case the rule forbids.
-// Limit: "is closed" the adjective reads as passive. The notParticiples list covers the common false hits.
+// Limit: "is closed" the adjective reads as passive. The notParticiples and edAdjectives lists cover the common false hits.
 import { words, key, strip, bounds } from '../Words.js'
 import { sentenceAt } from '../Sentences.js'
-import { beVerbs, irregular, notParticiples, contractions } from '../data/participles.js'
+import { beVerbs, irregular, notParticiples, edAdjectives, contractions } from '../data/participles.js'
 
 const BE = new Set(beVerbs)
 // punctuation on the end of a word: "was." or "by," is not bare, so it cannot join the next word
@@ -12,7 +12,7 @@ const BARE = /[^\p{L}\p{N}]$/u
 // the be-verb of a word, or undefined: is, was, or the one inside a contraction such as it's or isn't
 const beVerb = k => BE.has(k) ? k : contractions[k.replace(/’/g, "'")]
 const IRREGULAR = new Set(irregular)
-const NOT = new Set(notParticiples)
+const NOT = new Set([...notParticiples, ...edAdjectives])
 // the words that open an agent after "by": articles and pronouns. A capital word counts too, checked in place
 const AGENT = new Set(['a', 'an', 'the', 'me', 'us', 'you', 'him', 'her', 'them', 'it', 'my', 'our', 'your', 'his', 'their', 'its', 'this', 'that', 'these', 'those', 'some', 'one', 'someone', 'everyone', 'anyone', 'nobody'])
 

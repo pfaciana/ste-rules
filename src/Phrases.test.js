@@ -1,6 +1,6 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { phrases } from './Phrases.js'
+import { phrases, without } from './Phrases.js'
 
 const list = ['utilise', 'in order to', 'prior to', 'due to the fact that']
 
@@ -150,4 +150,16 @@ test('every match slices back to its own text', () => {
 	for (const [, entries, text] of lists) {
 		for (const m of phrases(text, entries)) assert.equal(text.slice(m.index, m.index + m.length), m.text)
 	}
+})
+
+// without: the entries not in allow, compared as keys
+test('without drops the allowed entries, case folded', () => {
+	assert.deepEqual(without(['shut down', 'top up', 'utilize'], ['Shut Down', 'utilize.']), ['top up'])
+	assert.deepEqual(without(['shut down'], ['x']), ['shut down'])
+})
+test('without returns the entries as given when allow is empty or missing', () => {
+	const list = ['shut down']
+	assert.equal(without(list, []), list)
+	assert.equal(without(list, null), list)
+	assert.equal(without(list), list)
 })

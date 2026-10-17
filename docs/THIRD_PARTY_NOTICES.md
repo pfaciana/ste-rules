@@ -53,6 +53,13 @@ The file has two parts:
 - Repository: https://github.com/sourdough-bread/asd-ste100-checker
 - Taken: 45 phrase pairs, 5 pronouns. Changed to fit this library, as Apache-2.0 section 4 asks to note.
 
+### agent-ste
+
+- Copyright (c) 2026 Cameron Austgen
+- License: MIT, full text below
+- Repository: https://github.com/ctotheameron/agent-ste
+- Taken: the wordy phrase pairs, the formal word pairs, part of the marketing word list, part of the filler list, part of the -ing noun list, the -ed adjective list.
+
 ## License texts
 
 ### MIT License

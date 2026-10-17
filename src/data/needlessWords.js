@@ -69,7 +69,23 @@ export const marketing = [
 	'supercharge',
 	'unleash',
 	'empower',
-	'empowers'
+	'empowers',
+	// the words a model puts in a README to sell the tool. From agent-ste src/ste/dictionary.gleam, MIT
+	'blazingly',
+	'industry-leading',
+	'rock-solid',
+	'bulletproof',
+	'gorgeous',
+	'sleek',
+	'intuitive',
+	'premier',
+	'innovative',
+	'disruptive',
+	'frictionless',
+	'bleeding-edge',
+	'buttery-smooth',
+	'transformative',
+	'mission-critical'
 ]
 
 export const fillers = [
@@ -78,5 +94,18 @@ export const fillers = [
 	'it is worth noting',
 	'please note that',
 	'as mentioned',
-	'as noted above'
+	'as noted above',
+	// a word that opens a claim and adds no fact: "Basically, it works" says "It works". From agent-ste, MIT
+	'obviously',
+	'of course',
+	'needless to say',
+	'it goes without saying',
+	'essentially',
+	'basically',
+	'at the end of the day',
+	'to be honest',
+	'in my opinion',
+	'somewhat',
+	'notably',
+	'at its core'
 ]

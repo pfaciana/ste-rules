@@ -8,14 +8,14 @@ const cases = [
 	// name                                   text                                        matches
 	['empty',                                 '',                                         []],
 	['plain verb only',                       'Install the tool.',                        []],
-	['at the very start',                     'Carry out the test.',                      [[0, 'Carry out', 'do or other command verb construction']]],
+	['at the very start',                     'Carry out the test.',                      [[0, 'Carry out', 'do']]],
 	['at the very end',                       'Now shut down',                            [[4, 'shut down', 'stop']]],
-	['upper case',                            'CARRY OUT THE TEST.',                      [[0, 'CARRY OUT', 'do or other command verb construction']]],
+	['upper case',                            'CARRY OUT THE TEST.',                      [[0, 'CARRY OUT', 'do']]],
 	['mixed case in the middle',              'We will Switch Off the power.',            [[8, 'Switch Off', 'stop']]],
 	['two matches, exact places',             'Shut down, then switch off.',              [[0, 'Shut down', 'stop'], [16, 'switch off', 'stop']]],
-	['across a line break',                   'Please carry\nout the test.',              [[7, 'carry\nout', 'do or other command verb construction']]],
-	['two spaces between the words',          'Please carry  out now.',                   [[7, 'carry  out', 'do or other command verb construction']]],
-	['punctuation next to the match',         'Do this (carry out), now.',                [[9, 'carry out', 'do or other command verb construction']]],
+	['across a line break',                   'Please carry\nout the test.',              [[7, 'carry\nout', 'do']]],
+	['two spaces between the words',          'Please carry  out now.',                   [[7, 'carry  out', 'do']]],
+	['punctuation next to the match',         'Do this (carry out), now.',                [[9, 'carry out', 'do']]],
 	['punctuation between the words',         'Please carry, out the test.',              []],
 	['a hyphen makes one word',               'Please carry-out the test.',               []],
 	['near miss, longer words',               'The carrier outdid us.',                   []],
@@ -25,39 +25,38 @@ const cases = [
 	['four word entry',                       'You have the capability to run it.',       [[4, 'have the capability to', 'can']]],
 	['five word entry',                       'It failed due to the fact that we left.',  [[10, 'due to the fact that', 'because']]],
 	['entry with an inner and',               'It moves back and forth.',                 [[9, 'back and forth', 'direction']]],
-	['noun phrase entry',                     'Remove the dead code.',                    [[11, 'dead code', 'unnecessary']]],
 	['the longest entry wins',                'Take care of the unit.',                   [[0, 'Take care of', 'handle']]],
 	['the short entry when the long one does not fit', 'Take care now.',                  [[0, 'Take care', 'make sure']]],
 	['the short entry when the long one does not fit, 2', 'It failed due to us.',         [[10, 'due to', 'because of']]],
 	['matches never overlap',                 'Top up to the line.',                      [[0, 'Top up', 'fill']]],
-	['two sentences, exact places',           'First. Please carry out now.',             [[14, 'carry out', 'do or other command verb construction']]],
+	['two sentences, exact places',           'First. Please carry out now.',             [[14, 'carry out', 'do']]],
 
 	// --- empty and tiny ---
 	// name                                   text                                        matches
 	['whitespace only',                       '   \t\n  ',                                []],
 	['one letter',                            'a',                                        []],
 	['one word',                              'run',                                      []],
-	['no punctuation at all',                 'please carry out now',                     [[7, 'carry out', 'do or other command verb construction']]],
+	['no punctuation at all',                 'please carry out now',                     [[7, 'carry out', 'do']]],
 
 	// --- whitespace and Unicode ---
-	['tabs between the words',                'Please\tcarry\tout now.',                  [[7, 'carry\tout', 'do or other command verb construction']]],
-	['a CRLF line break inside the match',    'Please carry\r\nout now.',                 [[7, 'carry\r\nout', 'do or other command verb construction']]],
-	['a no-break space inside the match',     'Please carry out now.',                    [[7, 'carry out', 'do or other command verb construction']]],
-	['an accented word before the match',     'Él will carry out.',                       [[8, 'carry out', 'do or other command verb construction']]],
-	['Cyrillic before the match',             'Текст: carry out now.',                    [[7, 'carry out', 'do or other command verb construction']]],
+	['tabs between the words',                'Please\tcarry\tout now.',                  [[7, 'carry\tout', 'do']]],
+	['a CRLF line break inside the match',    'Please carry\r\nout now.',                 [[7, 'carry\r\nout', 'do']]],
+	['a no-break space inside the match',     'Please carry out now.',                    [[7, 'carry out', 'do']]],
+	['an accented word before the match',     'Él will carry out.',                       [[8, 'carry out', 'do']]],
+	['Cyrillic before the match',             'Текст: carry out now.',                    [[7, 'carry out', 'do']]],
 	['CJK before the match',                  '日本語 shut down now.',                      [[4, 'shut down', 'stop']]],
 	['an emoji in front of the match',        'We 🎉shut down now.',                      [[5, 'shut down', 'stop']]],
 	['an emoji behind the match',             'We shut down🎉 now.',                      [[3, 'shut down', 'stop']]],
 
 	// --- markdown leftovers ---
-	['a heading line',                        '## Carry out the test.',                   [[3, 'Carry out', 'do or other command verb construction']]],
+	['a heading line',                        '## Carry out the test.',                   [[3, 'Carry out', 'do']]],
 	['a bullet line',                         '- shut down',                              [[2, 'shut down', 'stop']]],
-	['a numbered list line',                  '1. Carry out now.',                        [[3, 'Carry out', 'do or other command verb construction']]],
+	['a numbered list line',                  '1. Carry out now.',                        [[3, 'Carry out', 'do']]],
 	['bold marks around the match',           '**shut down** now.',                       [[2, 'shut down', 'stop']]],
 	['backtick code around the match',        'Run `shut down` now.',                     [[5, 'shut down', 'stop']]],
 	['a link whose text is the match',        '[shut down](https://x.com) now.',          []],
 	['a table row',                           '| shut down | top up |',                   [[2, 'shut down', 'stop'], [14, 'top up', 'fill']]],
-	['a block quote line',                    '> Carry out the test.',                    [[2, 'Carry out', 'do or other command verb construction']]],
+	['a block quote line',                    '> Carry out the test.',                    [[2, 'Carry out', 'do']]],
 
 	// --- code and URLs ---
 	['snake_case',                            'Call shut_down now.',                      []],
@@ -144,7 +143,7 @@ const fields = [
 	['carry out',                           'context',       'carry out'],
 	['Take care of it.',                    'message',       'Use one plain verb. Replace "Take care of" with "handle".'],
 	['It failed due to us.',                'message',       'Use one plain verb. Replace "due to" with "because of" or "because".'],
-	['Carry out the test.',                 'message',       'Use one plain verb. Replace "Carry out" with "do or other command verb construction" or "do" or "run" or "measure".'],
+	['Carry out the test.',                 'message',       'Use one plain verb. Replace "Carry out" with "do" or "run" or "measure".'],
 ]
 
 for (const [text, field, value] of fields) {
@@ -155,11 +154,10 @@ for (const [text, field, value] of fields) {
 const outputs = [
 	// text                                          matches
 	['The team fixed the build.',                    []],
-	['Please carry out now.',                        [{ index: 7, length: 9, text: 'carry out', context: 'Please carry out now.', alternatives: ['do or other command verb construction', 'do', 'run', 'measure'] }]],
+	['Please carry out now.',                        [{ index: 7, length: 9, text: 'carry out', context: 'Please carry out now.', alternatives: ['do', 'run', 'measure'] }]],
 	['Take care of it.',                             [{ index: 0, length: 12, text: 'Take care of', context: 'Take care of it.', alternatives: ['handle'] }]],
-	['Remove the dead code.',                        [{ index: 11, length: 9, text: 'dead code', context: 'Remove the dead code.', alternatives: ['unnecessary'] }]],
 	['You have the capability to run it.',           [{ index: 4, length: 22, text: 'have the capability to', context: 'You have the capability to run it.', alternatives: ['can'] }]],
-	['Please carry out now. It failed due to us.',   [{ index: 7, length: 9, text: 'carry out', context: 'Please carry out now.', alternatives: ['do or other command verb construction', 'do', 'run', 'measure'] }, { index: 32, length: 6, text: 'due to', context: 'It failed due to us.', alternatives: ['because of', 'because'] }]],
+	['Please carry out now. It failed due to us.',   [{ index: 7, length: 9, text: 'carry out', context: 'Please carry out now.', alternatives: ['do', 'run', 'measure'] }, { index: 32, length: 6, text: 'due to', context: 'It failed due to us.', alternatives: ['because of', 'because'] }]],
 	['We shut down🎉 now.',                          [{ index: 3, length: 9, text: 'shut down', context: 'We shut down🎉 now.', alternatives: ['stop'] }]],
 	['**shut down** now.',                           [{ index: 2, length: 9, text: 'shut down', context: '**shut down** now.', alternatives: ['stop'] }]],
 	['| shut down | top up |',                       [{ index: 2, length: 9, text: 'shut down', context: '| shut down | top up |', alternatives: ['stop'] }, { index: 14, length: 6, text: 'top up', context: '| shut down | top up |', alternatives: ['fill', 'add'] }]],
@@ -215,9 +213,24 @@ for (const [name, input, matches] of inputs) {
 	test(`input: ${name}`, () => assert.deepEqual(noPhrasalVerbs(input).map(m => [m.index, m.text, m.alternatives[0]]), matches))
 }
 
-test('an extra options argument changes nothing', () => {
+test('an unknown option changes nothing', () => {
 	const plain = noPhrasalVerbs('Please carry out now.')
 	assert.deepEqual(noPhrasalVerbs('Please carry out now.', {}), plain)
 	assert.deepEqual(noPhrasalVerbs('Please carry out now.', { max: 0 }), plain)
 	assert.deepEqual(noPhrasalVerbs('Please carry out now.', 'wrong type'), plain)
 })
+
+// The allow option drops the listed entries, case folded, and keeps the rest.
+const allowed = [
+	// text                                allow            matches
+	['Please shut down now.',              ['shut down'],   []],
+	['Please shut down now.',              ['Shut Down'],   []],
+	['Shut down, then switch off.',        ['shut down'],   [[16, 'switch off']]],
+	['Please shut down now.',              [],              [[7, 'shut down']]],
+	['Please shut down now.',              null,            [[7, 'shut down']]],
+	['Please shut down now.',              'shut down',     [[7, 'shut down']]],
+]
+
+for (const [text, allow, matches] of allowed) {
+	test(`allow ${JSON.stringify(allow)} for "${text}"`, () => assert.deepEqual(noPhrasalVerbs(text, { allow }).map(m => [m.index, m.text]), matches))
+}

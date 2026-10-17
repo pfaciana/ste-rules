@@ -5,24 +5,28 @@
 export { noSemicolons } from './src/rules/noSemicolons.js'
 export { maxWordsPerSentence } from './src/rules/maxWordsPerSentence.js'
 export { maxWordsPerParagraph } from './src/rules/maxWordsPerParagraph.js'
+export { maxSentencesPerParagraph } from './src/rules/maxSentencesPerParagraph.js'
 export { maxParagraphs } from './src/rules/maxParagraphs.js'
 export { maxWordsLastParagraph } from './src/rules/maxWordsLastParagraph.js'
 
 // word lists
 export { approvedModals } from './src/rules/approvedModals.js'
 export { noPhrasalVerbs } from './src/rules/noPhrasalVerbs.js'
+export { noWordyPhrases } from './src/rules/noWordyPhrases.js'
+export { plainWords } from './src/rules/plainWords.js'
 export { noUnnamedAuthority } from './src/rules/noUnnamedAuthority.js'
-export { noAmbiguousAbbreviations } from './src/rules/noAmbiguousAbbreviations.js'
 export { noNeedlessWords } from './src/rules/noNeedlessWords.js'
 export { oneHedge } from './src/rules/oneHedge.js'
+export { noPreamble } from './src/rules/noPreamble.js'
 
-// heuristics, with false hits
+// heuristics: word patterns that guess
 export { noIngVerbs } from './src/rules/noIngVerbs.js'
 export { activeVoice, passiveWithNamedAgent } from './src/rules/activeVoice.js'
 export { actionAsVerb } from './src/rules/actionAsVerb.js'
 export { noStackedAuxiliaries } from './src/rules/noStackedAuxiliaries.js'
+export { noPerfectTense } from './src/rules/noPerfectTense.js'
 export { clearPronouns } from './src/rules/clearPronouns.js'
-export { noPreamble } from './src/rules/noPreamble.js'
+export { noAmbiguousAbbreviations } from './src/rules/noAmbiguousAbbreviations.js'
 export { oneInstruction } from './src/rules/oneInstruction.js'
 
 // opt-in

@@ -15,6 +15,8 @@ const cases = [
 	['marketing wins over slop',               'It runs seamlessly.',                          [[8, 'seamlessly', 'marketing']]],
 	['filler wins over restatement',           'As mentioned, run it.',                        [[0, 'As mentioned', 'filler']]],
 	['the longest phrase wins',                'As noted above, run it.',                      [[0, 'As noted above', 'filler']]],
+	['marketing words from agent-ste',        'A sleek, intuitive, mission-critical tool.',   [[2, 'sleek', 'marketing'], [9, 'intuitive', 'marketing'], [20, 'mission-critical', 'marketing']]],
+	['fillers from agent-ste',                'Basically, it works. Obviously, at the end of the day, it ships.', [[0, 'Basically', 'filler'], [21, 'Obviously', 'filler'], [32, 'at the end of the day', 'filler']]],
 	['upper case',                             'DELVE INTO IT.',                               [[0, 'DELVE', 'slop']]],
 	['upper case phrase',                      'IN OTHER WORDS, run it.',                      [[0, 'IN OTHER WORDS', 'restatement']]],
 	['match at the very start',                'Leverage the parser.',                         [[0, 'Leverage', 'slop']]],
@@ -208,4 +210,18 @@ test('a long paragraph returns every match', () => {
 test('no argument returns an empty array', () => assert.deepEqual(noNeedlessWords(), []))
 test('null returns an empty array', () => assert.deepEqual(noNeedlessWords(null), []))
 test('a number returns an empty array', () => assert.deepEqual(noNeedlessWords(123), []))
-test('a second argument changes nothing', () => assert.deepEqual(noNeedlessWords('We delve.', { limit: 0 }), noNeedlessWords('We delve.')))
+test('an unknown option changes nothing', () => assert.deepEqual(noNeedlessWords('We delve.', { limit: 0 }), noNeedlessWords('We delve.')))
+
+// The allow option drops the listed entries, case folded, and keeps the rest.
+const allowed = [
+	// text                                allow            matches
+	['A robust estimator.',                ['robust'],      []],
+	['A robust estimator.',                ['Robust'],      []],
+	['We delve into a robust estimator.',  ['robust'],      [[3, 'delve']]],
+	['A robust estimator.',                [],              [[2, 'robust']]],
+	['A robust estimator.',                null,            [[2, 'robust']]],
+]
+
+for (const [text, allow, matches] of allowed) {
+	test(`allow ${JSON.stringify(allow)} for "${text}"`, () => assert.deepEqual(noNeedlessWords(text, { allow }).map(m => [m.index, m.text]), matches))
+}

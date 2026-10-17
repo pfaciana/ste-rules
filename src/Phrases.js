@@ -4,6 +4,17 @@
 import { words, key, bounds } from './Words.js'
 
 /**
+ * The entries not in `allow`, compared as keys: without(list, ['Spin Up']) drops 'spin up'. A rule's `allow` option.
+ * @param {Iterable<string>} entries
+ * @param {Iterable<string>} [allow]
+ * @returns {Iterable<string>}
+ */
+export function without(entries, allow) {
+	const skip = new Set(Array.from(allow ?? [], e => key(String(e))))
+	return skip.size ? Array.from(entries).filter(e => !skip.has(key(e))) : entries
+}
+
+/**
  * @param {string} text
  * @param {Iterable<string>} entries   words or phrases, e.g. ['utilise', 'in order to']
  * @returns {{ index: number, length: number, text: string, entry: string }[]}

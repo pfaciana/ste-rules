@@ -1,11 +1,13 @@
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { beVerbs, irregular, notParticiples, contractions } from './participles.js'
+import { beVerbs, irregular, notParticiples, edAdjectives, contractions } from './participles.js'
 import { ingNouns } from './ingNouns.js'
 import { hedges } from './hedges.js'
 import { slop, restatements, marketing, fillers } from './needlessWords.js'
 import { authority } from './authority.js'
 import { phrasalVerbs } from './phrasalVerbs.js'
+import { wordyPhrases } from './wordyPhrases.js'
+import { formalWords } from './formalWords.js'
 import { ambiguous, allowed } from './abbreviations.js'
 import { weakVerbs, suffixes, concrete } from './actionNouns.js'
 import { modals } from './modals.js'
@@ -17,6 +19,7 @@ const lists = [
 	['beVerbs',         beVerbs,                   8,    'was'],
 	['irregular',       irregular,                 60,   'written'],
 	['notParticiples',  notParticiples,            20,   'need'],
+	['edAdjectives',    edAdjectives,              10,   'limited'],
 	['contractions',    Object.keys(contractions), 14,   "it's"],
 	['ingNouns',        ingNouns,                  35,   'string'],
 	['hedges',          hedges,                    13,   'possibly'],
@@ -26,6 +29,8 @@ const lists = [
 	['fillers',         fillers,                   6,    'please note that'],
 	['authority',       authority,                 30,   'experts say'],
 	['phrasalVerbs',    Object.keys(phrasalVerbs), 60,   'prior to'],
+	['wordyPhrases',    Object.keys(wordyPhrases), 30,   'in order to'],
+	['formalWords',     Object.keys(formalWords),  80,   'use'],
 	['ambiguous',       Object.keys(ambiguous),    6,    'GC'],
 	['allowed',         allowed,                   40,   'HTML'],
 	['weakVerbs',       weakVerbs,                 3,    'perform'],

@@ -1,6 +1,6 @@
 {
 	"name": "ste-rules",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Simplified Technical English and plain-language rules for plain text, with zero dependencies. One function per rule. Text in, matches out.",
 	"keywords": [
 		"simplified-technical-english",

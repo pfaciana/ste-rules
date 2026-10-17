@@ -101,6 +101,24 @@ export const notParticiples = [
 	'sacred'
 ]
 
+/**
+ * -ed words that describe a state after a be-verb, not an action: "is limited", "is deprecated".
+ * For the passive check only. The perfect check keeps them as verbs: "we have deprecated the API".
+ * Source: agent-ste src/ste/checks.gleam, MIT, picked by a count over 402,000 words of prose.
+ */
+export const edAdjectives = [
+	'advanced',
+	'limited',
+	'detailed',
+	'related',
+	'dedicated',
+	'complicated',
+	'sophisticated',
+	'deprecated',
+	'mixed',
+	'varied'
+]
+
 // a contraction, then the be-verb inside it. "it's done" reads as "is done". Ours. The lookup key keeps the
 // straight apostrophe, so the caller folds a curly one first
 export const contractions = {
