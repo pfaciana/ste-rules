@@ -5,6 +5,7 @@
 export { noSemicolons } from './src/rules/noSemicolons.js'
 export { maxWordsPerSentence } from './src/rules/maxWordsPerSentence.js'
 export { maxWordsPerParagraph } from './src/rules/maxWordsPerParagraph.js'
+export { maxSentencesPerParagraph } from './src/rules/maxSentencesPerParagraph.js'
 export { maxParagraphs } from './src/rules/maxParagraphs.js'
 export { maxWordsLastParagraph } from './src/rules/maxWordsLastParagraph.js'
 

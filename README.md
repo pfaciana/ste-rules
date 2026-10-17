@@ -155,13 +155,14 @@ One function per rule. Each one reads one unit: the whole text, a paragraph, a s
 
 ### Counts
 
-| Function                | Reads     | Match when                                    |
-|-------------------------|-----------|-----------------------------------------------|
-| `noSemicolons`          | text      | a `;` is found                                |
-| `maxWordsPerSentence`   | sentence  | over 20 words. `limit`                        |
-| `maxWordsPerParagraph`  | paragraph | over 50 words. `limit`                        |
-| `maxParagraphs`         | text      | over 4 paragraphs. `limit`                    |
-| `maxWordsLastParagraph` | text      | the last paragraph has over 10 words. `limit` |
+| Function                   | Reads     | Match when                                    |
+|----------------------------|-----------|-----------------------------------------------|
+| `noSemicolons`             | text      | a `;` is found                                |
+| `maxWordsPerSentence`      | sentence  | over 20 words. `limit`                        |
+| `maxWordsPerParagraph`     | paragraph | over 50 words. `limit`                        |
+| `maxSentencesPerParagraph` | paragraph | over 6 sentences. `limit`                     |
+| `maxParagraphs`            | text      | over 4 paragraphs. `limit`                    |
+| `maxWordsLastParagraph`    | text      | the last paragraph has over 10 words. `limit` |
 
 `maxWordsLastParagraph` serves one house rule: end with the next step, in one short line. The function checks the length. It cannot check the meaning. A person, or a prompt rule, checks that the line names a next step.
 

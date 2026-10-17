@@ -26,7 +26,7 @@ What `text` and `context` hold depends on the unit the rule reads:
 |-----------|---------------------------------------|------------------------|
 | word      | the word or phrase                    | the sentence around it |
 | sentence  | the words past the limit, or the span | the sentence           |
-| paragraph | the words past the limit              | the paragraph          |
+| paragraph | the words or sentences past the limit | the paragraph          |
 | text      | the paragraph at fault                | the whole input        |
 
 `noSemicolons` is the exception. It reads the whole text, but its `text` is the `;` and its `context` is the sentence around it.
@@ -37,28 +37,31 @@ A rule returns one match per fault. A count rule returns one match per unit over
 
 A count is exact. The split into sentences and words is a guess, so a wrong split can give a wrong count. See Text Helpers for the split rules.
 
-| Function                | Inputs    | Options               | Additional Result Keys                             |
-|-------------------------|-----------|-----------------------|----------------------------------------------------|
-| `noSemicolons`          | text      |                       |                                                    |
-| `maxWordsPerSentence`   | sentence  | `limit?: number = 20` | `count: number`, `limit: number`                   |
-| `maxWordsPerParagraph`  | paragraph | `limit?: number = 50` | `count: number`, `limit: number`                   |
-| `maxParagraphs`         | text      | `limit?: number = 4`  | `number: number`, `total: number`, `limit: number` |
-| `maxWordsLastParagraph` | text      | `limit?: number = 10` | `count: number`, `limit: number`                   |
+| Function                   | Inputs    | Options               | Additional Result Keys                             |
+|----------------------------|-----------|-----------------------|----------------------------------------------------|
+| `noSemicolons`             | text      |                       |                                                    |
+| `maxWordsPerSentence`      | sentence  | `limit?: number = 20` | `count: number`, `limit: number`                   |
+| `maxWordsPerParagraph`     | paragraph | `limit?: number = 50` | `count: number`, `limit: number`                   |
+| `maxSentencesPerParagraph` | paragraph | `limit?: number = 6`  | `count: number`, `limit: number`                   |
+| `maxParagraphs`            | text      | `limit?: number = 4`  | `number: number`, `total: number`, `limit: number` |
+| `maxWordsLastParagraph`    | text      | `limit?: number = 10` | `count: number`, `limit: number`                   |
 
 Messages:
 
-| Rule                    | Message                                                                |
-|-------------------------|------------------------------------------------------------------------|
-| `noSemicolons`          | `Cut the semicolon. Write two sentences.`                              |
-| `maxWordsPerSentence`   | `Cut to ${limit} words. This sentence has ${count}.`                   |
-| `maxWordsPerParagraph`  | `Cut to ${limit} words. This paragraph has ${count}.`                  |
-| `maxParagraphs`         | `Cut to ${limit} paragraphs. This is paragraph ${number} of ${total}.` |
-| `maxWordsLastParagraph` | `Cut the last paragraph to ${limit} words. It has ${count}.`           |
+| Rule                       | Message                                                                |
+|----------------------------|------------------------------------------------------------------------|
+| `noSemicolons`             | `Cut the semicolon. Write two sentences.`                              |
+| `maxWordsPerSentence`      | `Cut to ${limit} words. This sentence has ${count}.`                   |
+| `maxWordsPerParagraph`     | `Cut to ${limit} words. This paragraph has ${count}.`                  |
+| `maxSentencesPerParagraph` | `Cut to ${limit} sentences. This paragraph has ${count}.`              |
+| `maxParagraphs`            | `Cut to ${limit} paragraphs. This is paragraph ${number} of ${total}.` |
+| `maxWordsLastParagraph`    | `Cut the last paragraph to ${limit} words. It has ${count}.`           |
 
 Notes:
 
 - `noSemicolons` gives one match per `;`. `text` is the `;`, `context` the sentence around it.
 - The two word limits give one match per long unit. `text` is the words past the limit, so `index` points at the first extra word.
+- `maxSentencesPerParagraph` gives one match per long paragraph. `text` is the sentences past the limit, so `index` points at the first extra sentence. The default, 6, is the ASD-STE100 cap.
 - `maxParagraphs` gives one match per paragraph past the limit. `text` is that paragraph.
 - `maxWordsLastParagraph` reads the last paragraph. `text` is that paragraph. Intended use: a response ends with the next step, in one short line. The rule checks the length, not the meaning.
 
