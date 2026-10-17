@@ -91,12 +91,12 @@ The lists:
 
 | Rule                       | List                                                                  |
 |----------------------------|-----------------------------------------------------------------------|
-| `approvedModals`           | 7 modals: may, might, should, could, would, shall, ought              |
-| `noPhrasalVerbs`           | 87 phrases, each with one or more shorter forms                       |
-| `noUnnamedAuthority`       | 38 phrases, such as "experts say"                                     |
-| `noAmbiguousAbbreviations` | 68 allowed, such as HTML, URL, MB. 14 ambiguous with their full term  |
-| `noNeedlessWords`          | 29 slop, 8 restatement, 24 marketing, 6 filler                        |
-| `oneHedge`                 | 13 hedge words, such as "possibly", "perhaps"                         |
+| `approvedModals`           | may, might, should, could, would, shall, ought                        |
+| `noPhrasalVerbs`           | phrases, each with one or more shorter forms                          |
+| `noUnnamedAuthority`       | phrases, such as "experts say"                                        |
+| `noAmbiguousAbbreviations` | allowed, such as HTML, URL, MB. Ambiguous, with their full term       |
+| `noNeedlessWords`          | slop, restatement, marketing, and filler words                        |
+| `oneHedge`                 | hedge words, such as "possibly", "perhaps"                            |
 
 Notes:
 
@@ -114,6 +114,7 @@ These rules read word patterns, not grammar. Each one has a known limit. Treat a
 | `passiveWithNamedAgent` | sentence | `be: string`, `participle: string`                   |
 | `actionAsVerb`          | sentence | `verb: string`, `noun: string`                       |
 | `noStackedAuxiliaries`  | sentence | `auxiliaries: string[]`                              |
+| `noPerfectTense`        | sentence | `auxiliary: string`, `participle: string`            |
 | `clearPronouns`         | sentence | `pronoun: string`, `verb: string`                    |
 | `noPreamble`            | text     | `phrase: string`, `place: 'start' \| 'end'`          |
 | `oneInstruction`        | sentence | `joiner: string`                                     |
@@ -127,6 +128,7 @@ Messages:
 | `passiveWithNamedAgent` | `The agent is named, so use the active voice: not "${text} by".`        |
 | `actionAsVerb`          | `Use the verb behind "${noun}", not "${text}".`                         |
 | `noStackedAuxiliaries`  | `Use one auxiliary, not "${auxiliaries}".`                              |
+| `noPerfectTense`        | `Use the simple past, not the perfect "${text}".`                       |
 | `clearPronouns`         | `Say what "${pronoun}" refers to: "${pronoun} <noun> ${verb}".`         |
 | `noPreamble`            | `Cut the preamble. Start with the answer, not "${phrase}".`             |
 |                         | `Cut the closing remark. Stop when the content stops, not "${phrase}".` |
@@ -143,8 +145,9 @@ What each one reads:
 | `passiveWithNamedAgent` | the `activeVoice` pattern, then "by"                                      |
 | `actionAsVerb`          | a weak verb, then within two words a -tion, -ment, -ance, or -ence noun   |
 | `noStackedAuxiliaries`  | two or more auxiliaries in a row, except `will be`, `can be`, `must be`   |
+| `noPerfectTense`        | have, has, or had, then a past participle, then a word that shows a verb  |
 | `clearPronouns`         | it, this, these, those, or they at the start, then a verb                 |
-| `noPreamble`            | the first paragraph starts with one of 16 openers, the last with a closer |
+| `noPreamble`            | the first paragraph starts with an opener, the last with a closer         |
 | `oneInstruction`        | "and then", or ", then" in a sentence with no condition word at its start |
 
 Limits:
@@ -153,7 +156,8 @@ Limits:
 - `activeVoice` and `passiveWithNamedAgent`: "is closed" the adjective reads as passive.
 - `actionAsVerb`: a concrete noun list covers the common false hits.
 - `clearPronouns`: a bare pronoun mid-sentence passes.
-- `noPreamble`: a phrase outside the two lists of 16 passes.
+- `noPerfectTense`: a noun right after the past participle passes, as in "We have received approval".
+- `noPreamble`: a phrase outside the two lists passes.
 - `oneInstruction`: a sentence joined by another word passes.
 
 Notes:

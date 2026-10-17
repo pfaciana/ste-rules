@@ -169,8 +169,8 @@ One function per rule. Each one reads one unit: the whole text, a paragraph, a s
 | Function                   | Reads    | Match when                                        |
 |----------------------------|----------|---------------------------------------------------|
 | `approvedModals`           | sentence | a modal other than can, will, must                |
-| `noPhrasalVerbs`           | sentence | one of 87 phrases with a shorter form             |
-| `noUnnamedAuthority`       | sentence | "experts say" or one of 37 more phrases           |
+| `noPhrasalVerbs`           | sentence | a phrase with a shorter form                      |
+| `noUnnamedAuthority`       | sentence | "experts say" or a similar phrase                 |
 | `noAmbiguousAbbreviations` | sentence | a run of capitals not in the allow list. `allow`  |
 | `noNeedlessWords`          | sentence | a slop, restatement, marketing, or filler word    |
 | `oneHedge`                 | sentence | over one hedge word. `limit`                      |
@@ -184,6 +184,7 @@ One function per rule. Each one reads one unit: the whole text, a paragraph, a s
 | `passiveWithNamedAgent` | sentence | a passive, then "by" and a name                           |
 | `actionAsVerb`          | sentence | a weak verb, then a -tion noun                            |
 | `noStackedAuxiliaries`  | sentence | two auxiliaries in a row, except will be, can be, must be |
+| `noPerfectTense`        | sentence | have, has, or had, then a past participle                 |
 | `clearPronouns`         | sentence | the sentence opens with a bare pronoun                    |
 | `noPreamble`            | text     | an opener or a closing remark                             |
 | `oneInstruction`        | sentence | "and then", or ", then" with no condition word first      |
@@ -200,7 +201,7 @@ A name after the check, such as `limit` or `allow`, is the option that tunes the
 
 ## False Hits
 
-The eight heuristics read word patterns, not grammar. There is no parser and no tagger. So each one guesses, and a guess can be wrong in two ways.
+The heuristics read word patterns, not grammar. There is no parser and no tagger. So each one guesses, and a guess can be wrong in two ways.
 
 Over-flags, a match on good text:
 
@@ -208,6 +209,7 @@ Over-flags, a match on good text:
 - `noNeedlessWords` flags a slop word in a quote or a name.
 - `clearPronouns` flags "This" at the start of a short bullet, where the referent is the bullet above.
 - `noAmbiguousAbbreviations` reads a sentence in capitals as a shout and skips it whole, so an abbreviation inside it passes.
+- `noPerfectTense` reads a name after "We've" as a verb. "We've Ted to thank" is flagged.
 
 Misses, no match on bad text:
 
@@ -215,6 +217,7 @@ Misses, no match on bad text:
 - `clearPronouns` reads the first word only. A bare "it" in the middle of a sentence passes.
 - `noPreamble` and `noUnnamedAuthority` know their lists. A new phrase passes.
 - `activeVoice` starts at a be-verb only. "It got fixed" passes.
+- `noPerfectTense` needs a word such as "the" after the verb. "We have received approval" passes.
 
 Treat a heuristic match as a hint, not a verdict. Give it a lower level than a count rule, or let a person confirm it. The counts and the word lists have no false hits: a count is exact, and a phrase is in the list or not.
 
