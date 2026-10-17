@@ -184,7 +184,7 @@ One function per rule. Each one reads one unit: the whole text, a paragraph, a s
 | `noIngVerbs`               | sentence | a be-verb, then an -ing word                              |
 | `activeVoice`              | sentence | a be-verb, then a past participle                         |
 | `passiveWithNamedAgent`    | sentence | a passive, then "by" and a name                           |
-| `actionAsVerb`             | sentence | a weak verb, then a -tion noun                            |
+| `actionAsVerb`             | sentence | a weak verb, then a -tion, -ment, -ance, or -ence noun    |
 | `noStackedAuxiliaries`     | sentence | two auxiliaries in a row, except will be, can be, must be |
 | `noPerfectTense`           | sentence | have, has, or had, then a past participle                 |
 | `clearPronouns`            | sentence | the sentence opens with a bare pronoun                    |
@@ -223,9 +223,11 @@ Misses, no match on bad text:
 
 Treat a heuristic match as a hint, not a verdict. Give it a lower level than a count rule, or let a person confirm it. Only a count is exact. A word list flags every listed word, so it also flags a listed word in a quote or a name.
 
+Some lists overlap. `may` is a modal and a hedge. `prior to` is a phrasal verb, a wordy phrase, and a formal word. One span can get a match from each rule that lists it.
+
 ## Your Own Rules
 
-The rules are built on four text helpers. They are exported too, so a new rule takes a few lines.
+The rules are built on six text helpers. They are exported too, so a new rule takes a few lines.
 
 ```js
 import { sentences, sentenceAt, paragraphs, words, wordCount, phrases } from 'ste-rules'

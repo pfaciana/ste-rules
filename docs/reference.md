@@ -27,13 +27,15 @@ What `text` and `context` hold depends on the unit the rule reads:
 | word      | the word or phrase                    | the sentence around it |
 | sentence  | the words past the limit, or the span | the sentence           |
 | paragraph | the words past the limit              | the paragraph          |
-| text      | the paragraph or the line at fault    | the whole input        |
+| text      | the paragraph at fault                | the whole input        |
+
+`noSemicolons` is the exception. It reads the whole text, but its `text` is the `;` and its `context` is the sentence around it.
 
 A rule returns one match per fault. A count rule returns one match per unit over the limit. `maxWordsLastParagraph` returns at most one.
 
 ## Count Rules
 
-A count is exact. These rules have no false hits.
+A count is exact. The split into sentences and words is a guess, so a wrong split can give a wrong count. See Text Helpers for the split rules.
 
 | Function                | Inputs    | Options               | Additional Result Keys                             |
 |-------------------------|-----------|-----------------------|----------------------------------------------------|
@@ -79,17 +81,17 @@ Messages:
 
 | Rule                       | Message                                                                      |
 |----------------------------|------------------------------------------------------------------------------|
-| `approvedModals`           | `Use only can, will, or must. Replace "${modal}" with "${alternatives[0]}".` |
+| `approvedModals`           | `Use only can, will, or must. Replace "${text}" with "${alternatives[0]}".`  |
 | `noPhrasalVerbs`           | `Use one plain verb. Replace "${text}" with "${alternatives}".`              |
 | `noWordyPhrases`           | `Use fewer words. Replace "${text}" with "${alternative}".`                  |
 | `plainWords`               | `Use a plain word. Replace "${text}" with "${alternative}".`                 |
 | `noUnnamedAuthority`       | `Name the source, or cut the claim. "${text}" names no one.`                 |
-| `noNeedlessWords`          | `Cut "${phrase}". It adds nothing.`                                          |
+| `noNeedlessWords`          | `Cut "${text}". It adds nothing.`                                            |
 | `oneHedge`                 | `Keep one hedge. This sentence has ${count}: ${hedges}.`                     |
 | `noPreamble`               | `Cut the preamble. Start with the answer, not "${phrase}".`                  |
 |                            | `Cut the closing remark. Stop when the content stops, not "${phrase}".`      |
 
-In `noPhrasalVerbs`, the alternatives are joined by `" or "`. In `oneHedge`, each hedge is quoted, and they are joined by `, `. `noPreamble` uses its first message at `place: 'start'` and its second at `place: 'end'`.
+`${text}` is the span as found, with its case. `modal` and `phrase` are the list entry, in lower case. In `noPhrasalVerbs`, the alternatives are joined by `" or "`. In `oneHedge`, each hedge is quoted, and they are joined by `, `. `noPreamble` uses its first message at `place: 'start'` and its second at `place: 'end'`.
 
 The lists:
 
@@ -108,6 +110,8 @@ Notes:
 
 - `oneHedge` gives one match per sentence over the limit. `text` is the span from the first extra hedge to the last.
 - `noPreamble` checks the first paragraph against the openers, and the last paragraph against the closers. It gives at most two matches, one per place. A one-paragraph text is checked against the openers only.
+- `approvedModals` skips a capital "May" that is the month: after another word in the sentence, "on May 5", or at the sentence start before a number, "May 5 is the date".
+- Some entries sit in more than one list. `may`, `might`, and `could` are a modal and a hedge, so `approvedModals` and `oneHedge` both flag them. `prior to` is in the lists of `noPhrasalVerbs`, `noWordyPhrases`, and `plainWords`, so all three flag it. A caller that runs several rules can get several matches on one span.
 
 ## Heuristic Rules
 
@@ -144,17 +148,17 @@ In `noStackedAuxiliaries`, the auxiliaries are joined by a space. `noAmbiguousAb
 
 What each one reads:
 
-| Rule                       | Pattern                                                                   |
-|----------------------------|---------------------------------------------------------------------------|
-| `noIngVerbs`               | a be-verb, then an -ing word not in the noun list                         |
-| `activeVoice`              | a be-verb, an optional -ly adverb, then a past participle                 |
-| `passiveWithNamedAgent`    | the `activeVoice` pattern, then "by"                                      |
-| `actionAsVerb`             | a weak verb, then within two words a -tion, -ment, -ance, or -ence noun   |
-| `noStackedAuxiliaries`     | two or more auxiliaries in a row, except `will be`, `can be`, `must be`   |
-| `noPerfectTense`           | have, has, or had, then a past participle, then a word that shows a verb  |
-| `clearPronouns`            | it, this, these, those, or they at the start, then a verb                 |
-| `noAmbiguousAbbreviations` | a capital, then 1 to 4 capitals or digits, not in the allowed list        |
-| `oneInstruction`           | "and then", or ", then" in a sentence with no condition word at its start |
+| Rule                       | Pattern                                                                          |
+|----------------------------|----------------------------------------------------------------------------------|
+| `noIngVerbs`               | a be-verb, then an -ing word not in the noun list                                |
+| `activeVoice`              | a be-verb, an optional -ly adverb, then a past participle                        |
+| `passiveWithNamedAgent`    | a passive, then "by", then a capital word, an article, or a pronoun              |
+| `actionAsVerb`             | a weak verb, then a -tion, -ment, -ance, or -ence noun in the next three words   |
+| `noStackedAuxiliaries`     | two or more auxiliaries in a row, except `will be`, `can be`, `must be`          |
+| `noPerfectTense`           | have, has, or had, then a past participle, then a word that shows a verb         |
+| `clearPronouns`            | it, this, these, those, or they at the start, then a verb                        |
+| `noAmbiguousAbbreviations` | a capital, then 1 to 4 capitals or digits, not in the allowed list               |
+| `oneInstruction`           | "and then", or ", then" in a sentence with no condition word at its start        |
 
 Limits:
 
@@ -168,7 +172,9 @@ Limits:
 
 Notes:
 
-- `activeVoice` flags every passive. `agent` is true when "by" follows. `passiveWithNamedAgent` flags only that case, for callers who allow the passive with no agent.
+- `activeVoice` flags every passive. `agent` is true when "by" and an agent follow. `passiveWithNamedAgent` flags only that case, for callers who allow the passive with no agent. An agent is a capital word, an article, or a pronoun: "by Ann", "by the team", "by us". A time or a means is not an agent: "by noon", "by hand" pass.
+- `actionAsVerb`: the noun can be the first, second, or third word after the verb. "Perform a full validation" is flagged. "Perform a very full validation" passes.
+- `noPerfectTense` also reads the short forms `I've`, `we've`, `you've`, `they've`, `haven't`, `hasn't`, `hadn't`. One of `not`, `never`, `already`, `just` can sit between the auxiliary and the participle: "have not fixed".
 - `noAmbiguousAbbreviations`: `allow` adds your own abbreviations, exact case.
 
 ## Opt-in Rule
@@ -206,7 +212,7 @@ The six functions the rules are built on. All are exported.
 
 In every result, `index` and `length` point into the input string, and `text` is the exact slice.
 
-A sentence ends at `.`, `!`, or `?`, then any closing quote or bracket, then whitespace or the end. A blank line ends a sentence too. A period inside `e.g.`, `i.e.`, `etc.`, `vs.`, `Fig.`, `No.` does not end one, unless a capital word follows. A period after a title, `Dr.`, `Mr.`, `Mrs.`, `Ms.`, `Prof.`, does not end one. A period inside a dotted run, `U.S.A.`, `a.m.`, `Node.js`, does not end one. A number and a period at a line start, `1.`, is a list marker. A period after one capital letter ends the sentence: `Choose option B.` A period between digits is a decimal.
+A sentence ends at `.`, `!`, or `?`, then any closing quote or bracket, then whitespace or the end. A blank line ends a sentence too. A period inside `e.g.`, `i.e.`, `etc.`, `vs.`, `Fig.`, `No.` does not end one, unless a capital word follows. A period after a title, `Dr.`, `Mr.`, `Mrs.`, `Ms.`, `Prof.`, `Sr.`, `Jr.`, `St.`, does not end one. A period inside a dotted run, `U.S.A.`, `a.m.`, `Node.js`, does not end one. The last period of the run ends one only when a capital word follows. A number and a period at a line start, `1.`, is a list marker. A period after one capital letter ends the sentence: `Choose option B.` A period between digits is a decimal.
 
 A paragraph is a run of non-blank lines between blank lines. Its `text` is trimmed.
 
