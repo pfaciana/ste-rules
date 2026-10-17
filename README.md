@@ -173,23 +173,23 @@ One function per rule. Each one reads one unit: the whole text, a paragraph, a s
 | `noWordyPhrases`           | sentence | a wordy phrase with a shorter form                |
 | `plainWords`               | sentence | a formal word with a plain form                   |
 | `noUnnamedAuthority`       | sentence | "experts say" or a similar phrase                 |
-| `noAmbiguousAbbreviations` | sentence | a run of capitals not in the allow list. `allow`  |
 | `noNeedlessWords`          | sentence | a slop, restatement, marketing, or filler word    |
 | `oneHedge`                 | sentence | over one hedge word. `limit`                      |
+| `noPreamble`               | text     | an opener or a closing remark                     |
 
 ### Heuristics
 
-| Function                | Reads    | Match when                                                |
-|-------------------------|----------|-----------------------------------------------------------|
-| `noIngVerbs`            | sentence | a be-verb, then an -ing word                              |
-| `activeVoice`           | sentence | a be-verb, then a past participle                         |
-| `passiveWithNamedAgent` | sentence | a passive, then "by" and a name                           |
-| `actionAsVerb`          | sentence | a weak verb, then a -tion noun                            |
-| `noStackedAuxiliaries`  | sentence | two auxiliaries in a row, except will be, can be, must be |
-| `noPerfectTense`        | sentence | have, has, or had, then a past participle                 |
-| `clearPronouns`         | sentence | the sentence opens with a bare pronoun                    |
-| `noPreamble`            | text     | an opener or a closing remark                             |
-| `oneInstruction`        | sentence | "and then", or ", then" with no condition word first      |
+| Function                   | Reads    | Match when                                                |
+|----------------------------|----------|-----------------------------------------------------------|
+| `noIngVerbs`               | sentence | a be-verb, then an -ing word                              |
+| `activeVoice`              | sentence | a be-verb, then a past participle                         |
+| `passiveWithNamedAgent`    | sentence | a passive, then "by" and a name                           |
+| `actionAsVerb`             | sentence | a weak verb, then a -tion noun                            |
+| `noStackedAuxiliaries`     | sentence | two auxiliaries in a row, except will be, can be, must be |
+| `noPerfectTense`           | sentence | have, has, or had, then a past participle                 |
+| `clearPronouns`            | sentence | the sentence opens with a bare pronoun                    |
+| `noAmbiguousAbbreviations` | sentence | a run of capitals not in the allow list. `allow`          |
+| `oneInstruction`           | sentence | "and then", or ", then" with no condition word first      |
 
 ### Opt-in
 
@@ -221,7 +221,7 @@ Misses, no match on bad text:
 - `activeVoice` starts at a be-verb only. "It got fixed" passes.
 - `noPerfectTense` needs a word such as "the" after the verb. "We have received approval" passes.
 
-Treat a heuristic match as a hint, not a verdict. Give it a lower level than a count rule, or let a person confirm it. The counts and the word lists have no false hits: a count is exact, and a phrase is in the list or not.
+Treat a heuristic match as a hint, not a verdict. Give it a lower level than a count rule, or let a person confirm it. Only a count is exact. A word list flags every listed word, so it also flags a listed word in a quote or a name.
 
 ## Your Own Rules
 

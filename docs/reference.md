@@ -62,7 +62,7 @@ Notes:
 
 ## Word List Rules
 
-A phrase is in the list or not. These rules have no false hits, but a list can miss a phrase.
+These rules match a word or phrase from a list. A list can miss a phrase. A listed word in good text, such as a quote or a name, is still flagged.
 
 | Function                   | Inputs   | Options                 | Additional Result Keys                                                       |
 |----------------------------|----------|-------------------------|------------------------------------------------------------------------------|
@@ -71,9 +71,9 @@ A phrase is in the list or not. These rules have no false hits, but a list can m
 | `noWordyPhrases`           | sentence |                         | `alternative: string`                                                        |
 | `plainWords`               | sentence |                         | `alternative: string`                                                        |
 | `noUnnamedAuthority`       | sentence |                         | `phrase: string`                                                             |
-| `noAmbiguousAbbreviations` | sentence | `allow?: string[] = []` | `full: string \| null`                                                       |
 | `noNeedlessWords`          | sentence |                         | `phrase: string`, `kind: 'slop' \| 'restatement' \| 'marketing' \| 'filler'` |
 | `oneHedge`                 | sentence | `limit?: number = 1`    | `count: number`, `limit: number`, `hedges: string[]`                         |
+| `noPreamble`               | text     |                         | `phrase: string`, `place: 'start' \| 'end'`                                  |
 
 Messages:
 
@@ -84,12 +84,12 @@ Messages:
 | `noWordyPhrases`           | `Use fewer words. Replace "${text}" with "${alternative}".`                  |
 | `plainWords`               | `Use a plain word. Replace "${text}" with "${alternative}".`                 |
 | `noUnnamedAuthority`       | `Name the source, or cut the claim. "${text}" names no one.`                 |
-| `noAmbiguousAbbreviations` | `Write the full term: "${full}", not "${text}".`                             |
-|                            | `Write the full term, not "${text}".`                                        |
 | `noNeedlessWords`          | `Cut "${phrase}". It adds nothing.`                                          |
 | `oneHedge`                 | `Keep one hedge. This sentence has ${count}: ${hedges}.`                     |
+| `noPreamble`               | `Cut the preamble. Start with the answer, not "${phrase}".`                  |
+|                            | `Cut the closing remark. Stop when the content stops, not "${phrase}".`      |
 
-`noAmbiguousAbbreviations` uses its second message when `full` is null. In `noPhrasalVerbs`, the alternatives are joined by `" or "`. In `oneHedge`, each hedge is quoted, and they are joined by `, `.
+In `noPhrasalVerbs`, the alternatives are joined by `" or "`. In `oneHedge`, each hedge is quoted, and they are joined by `, `. `noPreamble` uses its first message at `place: 'start'` and its second at `place: 'end'`.
 
 The lists:
 
@@ -100,61 +100,61 @@ The lists:
 | `noWordyPhrases`           | wordy phrases, such as "in order to"                                  |
 | `plainWords`               | formal words, such as "utilize"                                       |
 | `noUnnamedAuthority`       | phrases, such as "experts say"                                        |
-| `noAmbiguousAbbreviations` | allowed, such as HTML, URL, MB. Ambiguous, with their full term       |
 | `noNeedlessWords`          | slop, restatement, marketing, and filler words                        |
 | `oneHedge`                 | hedge words, such as "possibly", "perhaps"                            |
+| `noPreamble`               | openers, such as "sure", and closers, such as "in summary"            |
 
 Notes:
 
-- `noAmbiguousAbbreviations` flags a word of two to five capitals or digits that starts with a capital, and is not in the allowed list. A sentence in which every word is upper case is skipped. `allow` adds your own, exact case.
 - `oneHedge` gives one match per sentence over the limit. `text` is the span from the first extra hedge to the last.
+- `noPreamble` checks the first paragraph against the openers, and the last paragraph against the closers. It gives at most two matches, one per place. A one-paragraph text is checked against the openers only.
 
 ## Heuristic Rules
 
 These rules read word patterns, not grammar. Each one has a known limit. Treat a match as a hint.
 
-| Function                | Inputs   | Additional Result Keys                               |
-|-------------------------|----------|------------------------------------------------------|
-| `noIngVerbs`            | sentence | `be: string`, `verb: string`                         |
-| `activeVoice`           | sentence | `be: string`, `participle: string`, `agent: boolean` |
-| `passiveWithNamedAgent` | sentence | `be: string`, `participle: string`                   |
-| `actionAsVerb`          | sentence | `verb: string`, `noun: string`                       |
-| `noStackedAuxiliaries`  | sentence | `auxiliaries: string[]`                              |
-| `noPerfectTense`        | sentence | `auxiliary: string`, `participle: string`            |
-| `clearPronouns`         | sentence | `pronoun: string`, `verb: string`                    |
-| `noPreamble`            | text     | `phrase: string`, `place: 'start' \| 'end'`          |
-| `oneInstruction`        | sentence | `joiner: string`                                     |
+| Function                   | Inputs   | Options                 | Additional Result Keys                               |
+|----------------------------|----------|-------------------------|------------------------------------------------------|
+| `noIngVerbs`               | sentence |                         | `be: string`, `verb: string`                         |
+| `activeVoice`              | sentence |                         | `be: string`, `participle: string`, `agent: boolean` |
+| `passiveWithNamedAgent`    | sentence |                         | `be: string`, `participle: string`                   |
+| `actionAsVerb`             | sentence |                         | `verb: string`, `noun: string`                       |
+| `noStackedAuxiliaries`     | sentence |                         | `auxiliaries: string[]`                              |
+| `noPerfectTense`           | sentence |                         | `auxiliary: string`, `participle: string`            |
+| `clearPronouns`            | sentence |                         | `pronoun: string`, `verb: string`                    |
+| `noAmbiguousAbbreviations` | sentence | `allow?: string[] = []` | `full: string \| null`                               |
+| `oneInstruction`           | sentence |                         | `joiner: string`                                     |
 
 Messages:
 
-| Rule                    | Message                                                                 |
-|-------------------------|-------------------------------------------------------------------------|
-| `noIngVerbs`            | `Use the simple form, not "${text}".`                                   |
-| `activeVoice`           | `Use the active voice. Name who does the action, not "${text}".`        |
-| `passiveWithNamedAgent` | `The agent is named, so use the active voice: not "${text} by".`        |
-| `actionAsVerb`          | `Use the verb behind "${noun}", not "${text}".`                         |
-| `noStackedAuxiliaries`  | `Use one auxiliary, not "${auxiliaries}".`                              |
-| `noPerfectTense`        | `Use the simple past, not the perfect "${text}".`                       |
-| `clearPronouns`         | `Say what "${pronoun}" refers to: "${pronoun} <noun> ${verb}".`         |
-| `noPreamble`            | `Cut the preamble. Start with the answer, not "${phrase}".`             |
-|                         | `Cut the closing remark. Stop when the content stops, not "${phrase}".` |
-| `oneInstruction`        | `Write one instruction per sentence. Split at "${joiner}".`             |
+| Rule                       | Message                                                                 |
+|----------------------------|-------------------------------------------------------------------------|
+| `noIngVerbs`               | `Use the simple form, not "${text}".`                                   |
+| `activeVoice`              | `Use the active voice. Name who does the action, not "${text}".`        |
+| `passiveWithNamedAgent`    | `The agent is named, so use the active voice: not "${text} by".`        |
+| `actionAsVerb`             | `Use the verb behind "${noun}", not "${text}".`                         |
+| `noStackedAuxiliaries`     | `Use one auxiliary, not "${auxiliaries}".`                              |
+| `noPerfectTense`           | `Use the simple past, not the perfect "${text}".`                       |
+| `clearPronouns`            | `Say what "${pronoun}" refers to: "${pronoun} <noun> ${verb}".`         |
+| `noAmbiguousAbbreviations` | `Write the full term: "${full}", not "${text}".`                        |
+|                            | `Write the full term, not "${text}".`                                   |
+| `oneInstruction`           | `Write one instruction per sentence. Split at "${joiner}".`             |
 
-`noPreamble` uses its first message at `place: 'start'` and its second at `place: 'end'`. In `noStackedAuxiliaries`, the auxiliaries are joined by a space.
+In `noStackedAuxiliaries`, the auxiliaries are joined by a space. `noAmbiguousAbbreviations` uses its second message when `full` is null.
 
 What each one reads:
 
-| Rule                    | Pattern                                                                   |
-|-------------------------|---------------------------------------------------------------------------|
-| `noIngVerbs`            | a be-verb, then an -ing word not in the noun list                         |
-| `activeVoice`           | a be-verb, an optional -ly adverb, then a past participle                 |
-| `passiveWithNamedAgent` | the `activeVoice` pattern, then "by"                                      |
-| `actionAsVerb`          | a weak verb, then within two words a -tion, -ment, -ance, or -ence noun   |
-| `noStackedAuxiliaries`  | two or more auxiliaries in a row, except `will be`, `can be`, `must be`   |
-| `noPerfectTense`        | have, has, or had, then a past participle, then a word that shows a verb  |
-| `clearPronouns`         | it, this, these, those, or they at the start, then a verb                 |
-| `noPreamble`            | the first paragraph starts with an opener, the last with a closer         |
-| `oneInstruction`        | "and then", or ", then" in a sentence with no condition word at its start |
+| Rule                       | Pattern                                                                   |
+|----------------------------|---------------------------------------------------------------------------|
+| `noIngVerbs`               | a be-verb, then an -ing word not in the noun list                         |
+| `activeVoice`              | a be-verb, an optional -ly adverb, then a past participle                 |
+| `passiveWithNamedAgent`    | the `activeVoice` pattern, then "by"                                      |
+| `actionAsVerb`             | a weak verb, then within two words a -tion, -ment, -ance, or -ence noun   |
+| `noStackedAuxiliaries`     | two or more auxiliaries in a row, except `will be`, `can be`, `must be`   |
+| `noPerfectTense`           | have, has, or had, then a past participle, then a word that shows a verb  |
+| `clearPronouns`            | it, this, these, those, or they at the start, then a verb                 |
+| `noAmbiguousAbbreviations` | a capital, then 1 to 4 capitals or digits, not in the allowed list        |
+| `oneInstruction`           | "and then", or ", then" in a sentence with no condition word at its start |
 
 Limits:
 
@@ -163,13 +163,13 @@ Limits:
 - `actionAsVerb`: a concrete noun list covers the common false hits.
 - `clearPronouns`: a bare pronoun mid-sentence passes.
 - `noPerfectTense`: a noun right after the past participle passes, as in "We have received approval".
-- `noPreamble`: a phrase outside the two lists passes.
+- `noAmbiguousAbbreviations`: a sentence in capitals is skipped whole, so an abbreviation inside it passes.
 - `oneInstruction`: a sentence joined by another word passes.
 
 Notes:
 
 - `activeVoice` flags every passive. `agent` is true when "by" follows. `passiveWithNamedAgent` flags only that case, for callers who allow the passive with no agent.
-- `noPreamble` gives at most two matches, one per place. A one-paragraph text is checked against the openers only.
+- `noAmbiguousAbbreviations`: `allow` adds your own abbreviations, exact case.
 
 ## Opt-in Rule
 
