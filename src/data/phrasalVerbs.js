@@ -1,6 +1,6 @@
 // Multi-word verbs and phrases with shorter replacements.
 // Sources: OpenSTE via vale-stuffbucket, MIT, 43 entries; STE-Code ste-code/data/synonym-table.json, MIT, 38 entries;
-// asd-ste100-checker ste100/dictionary/data/dictionary.json, Apache-2.0, 45 entries. Merged: 87.
+// asd-ste100-checker ste100/dictionary/data/dictionary.json, Apache-2.0, 45 entries. Merged: 86.
 
 export const phrasalVerbs = {
 	'according to': [
@@ -29,7 +29,6 @@ export const phrasalVerbs = {
 		'with'
 	],
 	'carry out': [
-		'do or other command verb construction',
 		'do',
 		'run',
 		'measure'
@@ -111,7 +110,6 @@ export const phrasalVerbs = {
 		'make sure'
 	],
 	'make sense': [
-		'make a complete thought',
 		'be clear',
 		'be in harmony with',
 		'be reasonable',
@@ -258,9 +256,6 @@ export const phrasalVerbs = {
 	],
 	'fire up': [
 		'start'
-	],
-	'dead code': [
-		'unnecessary'
 	],
 	'as long as': [
 		'while'
