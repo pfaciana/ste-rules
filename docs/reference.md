@@ -69,6 +69,7 @@ A phrase is in the list or not. These rules have no false hits, but a list can m
 | `approvedModals`           | sentence |                         | `modal: string`, `alternatives: string[]`                                    |
 | `noPhrasalVerbs`           | sentence |                         | `alternatives: string[]`                                                     |
 | `noWordyPhrases`           | sentence |                         | `alternative: string`                                                        |
+| `plainWords`               | sentence |                         | `alternative: string`                                                        |
 | `noUnnamedAuthority`       | sentence |                         | `phrase: string`                                                             |
 | `noAmbiguousAbbreviations` | sentence | `allow?: string[] = []` | `full: string \| null`                                                       |
 | `noNeedlessWords`          | sentence |                         | `phrase: string`, `kind: 'slop' \| 'restatement' \| 'marketing' \| 'filler'` |
@@ -81,6 +82,7 @@ Messages:
 | `approvedModals`           | `Use only can, will, or must. Replace "${modal}" with "${alternatives[0]}".` |
 | `noPhrasalVerbs`           | `Use one plain verb. Replace "${text}" with "${alternatives}".`              |
 | `noWordyPhrases`           | `Use fewer words. Replace "${text}" with "${alternative}".`                  |
+| `plainWords`               | `Use a plain word. Replace "${text}" with "${alternative}".`                 |
 | `noUnnamedAuthority`       | `Name the source, or cut the claim. "${text}" names no one.`                 |
 | `noAmbiguousAbbreviations` | `Write the full term: "${full}", not "${text}".`                             |
 |                            | `Write the full term, not "${text}".`                                        |
@@ -96,6 +98,7 @@ The lists:
 | `approvedModals`           | may, might, should, could, would, shall, ought                        |
 | `noPhrasalVerbs`           | phrases, each with one or more shorter forms                          |
 | `noWordyPhrases`           | wordy phrases, such as "in order to"                                  |
+| `plainWords`               | formal words, such as "utilize"                                       |
 | `noUnnamedAuthority`       | phrases, such as "experts say"                                        |
 | `noAmbiguousAbbreviations` | allowed, such as HTML, URL, MB. Ambiguous, with their full term       |
 | `noNeedlessWords`          | slop, restatement, marketing, and filler words                        |

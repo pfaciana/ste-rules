@@ -58,7 +58,7 @@ The file has two parts:
 - Copyright (c) 2026 Cameron Austgen
 - License: MIT, full text below
 - Repository: https://github.com/ctotheameron/agent-ste
-- Taken: the wordy phrase pairs.
+- Taken: the wordy phrase pairs, the formal word pairs.
 
 ## License texts
 

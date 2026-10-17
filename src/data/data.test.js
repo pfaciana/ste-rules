@@ -7,6 +7,7 @@ import { slop, restatements, marketing, fillers } from './needlessWords.js'
 import { authority } from './authority.js'
 import { phrasalVerbs } from './phrasalVerbs.js'
 import { wordyPhrases } from './wordyPhrases.js'
+import { formalWords } from './formalWords.js'
 import { ambiguous, allowed } from './abbreviations.js'
 import { weakVerbs, suffixes, concrete } from './actionNouns.js'
 import { modals } from './modals.js'
@@ -28,6 +29,7 @@ const lists = [
 	['authority',       authority,                 30,   'experts say'],
 	['phrasalVerbs',    Object.keys(phrasalVerbs), 60,   'prior to'],
 	['wordyPhrases',    Object.keys(wordyPhrases), 30,   'in order to'],
+	['formalWords',     Object.keys(formalWords),  80,   'use'],
 	['ambiguous',       Object.keys(ambiguous),    6,    'GC'],
 	['allowed',         allowed,                   40,   'HTML'],
 	['weakVerbs',       weakVerbs,                 3,    'perform'],
