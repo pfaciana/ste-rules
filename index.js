@@ -11,6 +11,7 @@ export { maxWordsLastParagraph } from './src/rules/maxWordsLastParagraph.js'
 // word lists
 export { approvedModals } from './src/rules/approvedModals.js'
 export { noPhrasalVerbs } from './src/rules/noPhrasalVerbs.js'
+export { noWordyPhrases } from './src/rules/noWordyPhrases.js'
 export { noUnnamedAuthority } from './src/rules/noUnnamedAuthority.js'
 export { noAmbiguousAbbreviations } from './src/rules/noAmbiguousAbbreviations.js'
 export { noNeedlessWords } from './src/rules/noNeedlessWords.js'

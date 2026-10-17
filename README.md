@@ -170,6 +170,7 @@ One function per rule. Each one reads one unit: the whole text, a paragraph, a s
 |----------------------------|----------|---------------------------------------------------|
 | `approvedModals`           | sentence | a modal other than can, will, must                |
 | `noPhrasalVerbs`           | sentence | a phrase with a shorter form                      |
+| `noWordyPhrases`           | sentence | a wordy phrase with a shorter form                |
 | `noUnnamedAuthority`       | sentence | "experts say" or a similar phrase                 |
 | `noAmbiguousAbbreviations` | sentence | a run of capitals not in the allow list. `allow`  |
 | `noNeedlessWords`          | sentence | a slop, restatement, marketing, or filler word    |
