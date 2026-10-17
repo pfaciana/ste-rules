@@ -213,7 +213,7 @@ for (const [name, input, matches] of inputs) {
 	test(`input: ${name}`, () => assert.deepEqual(noPhrasalVerbs(input).map(m => [m.index, m.text, m.alternatives[0]]), matches))
 }
 
-test('an extra options argument changes nothing', () => {
+test('an unknown option changes nothing', () => {
 	const plain = noPhrasalVerbs('Please carry out now.')
 	assert.deepEqual(noPhrasalVerbs('Please carry out now.', {}), plain)
 	assert.deepEqual(noPhrasalVerbs('Please carry out now.', { max: 0 }), plain)

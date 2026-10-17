@@ -58,7 +58,7 @@ The file has two parts:
 - Copyright (c) 2026 Cameron Austgen
 - License: MIT, full text below
 - Repository: https://github.com/ctotheameron/agent-ste
-- Taken: the wordy phrase pairs, the formal word pairs.
+- Taken: the wordy phrase pairs, the formal word pairs, part of the marketing word list, part of the filler list, part of the -ing noun list, the -ed adjective list.
 
 ## License texts
 

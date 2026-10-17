@@ -210,7 +210,7 @@ test('a long paragraph returns every match', () => {
 test('no argument returns an empty array', () => assert.deepEqual(noNeedlessWords(), []))
 test('null returns an empty array', () => assert.deepEqual(noNeedlessWords(null), []))
 test('a number returns an empty array', () => assert.deepEqual(noNeedlessWords(123), []))
-test('a second argument changes nothing', () => assert.deepEqual(noNeedlessWords('We delve.', { limit: 0 }), noNeedlessWords('We delve.')))
+test('an unknown option changes nothing', () => assert.deepEqual(noNeedlessWords('We delve.', { limit: 0 }), noNeedlessWords('We delve.')))
 
 // The allow option drops the listed entries, case folded, and keeps the rest.
 const allowed = [
