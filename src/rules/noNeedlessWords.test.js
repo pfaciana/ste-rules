@@ -15,6 +15,8 @@ const cases = [
 	['marketing wins over slop',               'It runs seamlessly.',                          [[8, 'seamlessly', 'marketing']]],
 	['filler wins over restatement',           'As mentioned, run it.',                        [[0, 'As mentioned', 'filler']]],
 	['the longest phrase wins',                'As noted above, run it.',                      [[0, 'As noted above', 'filler']]],
+	['marketing words from agent-ste',        'A sleek, intuitive, mission-critical tool.',   [[2, 'sleek', 'marketing'], [9, 'intuitive', 'marketing'], [20, 'mission-critical', 'marketing']]],
+	['fillers from agent-ste',                'Basically, it works. Obviously, at the end of the day, it ships.', [[0, 'Basically', 'filler'], [21, 'Obviously', 'filler'], [32, 'at the end of the day', 'filler']]],
 	['upper case',                             'DELVE INTO IT.',                               [[0, 'DELVE', 'slop']]],
 	['upper case phrase',                      'IN OTHER WORDS, run it.',                      [[0, 'IN OTHER WORDS', 'restatement']]],
 	['match at the very start',                'Leverage the parser.',                         [[0, 'Leverage', 'slop']]],

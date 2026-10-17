@@ -112,7 +112,7 @@ Notes:
 - `noPreamble` checks the first paragraph against the openers, and the last paragraph against the closers. It gives at most two matches, one per place. A one-paragraph text is checked against the openers only.
 - `approvedModals` skips a capital "May" that is the month: after another word in the sentence, "on May 5", or at the sentence start before a number, "May 5 is the date".
 - `allow` drops the listed entries from the rule, case folded. A project keeps its own terms: `noPhrasalVerbs(text, { allow: ['spin up', 'shut down'] })` passes "spin up" and flags the rest.
-- Some entries sit in more than one list. `may`, `might`, and `could` are a modal and a hedge, so `approvedModals` and `oneHedge` both flag them. `prior to` is in the lists of `noPhrasalVerbs`, `noWordyPhrases`, and `plainWords`, so all three flag it. A caller that runs several rules can get several matches on one span.
+- Some entries sit in more than one list. `may`, `might`, and `could` are a modal and a hedge, so `approvedModals` and `oneHedge` both flag them. `prior to` is in the lists of `noPhrasalVerbs`, `noWordyPhrases`, and `plainWords`, so all three flag it. `of course` is an opener and a filler. A caller that runs several rules can get several matches on one span.
 
 ## Heuristic Rules
 

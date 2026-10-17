@@ -1,6 +1,6 @@
 // Words that end in -ing but are nouns or function words, not verb forms.
 // Source: vale-stuffbucket internal/rules/ing_forms.go, MIT. 38 entries. Plus 16 -ing adjectives, ours.
-// Plus 3 nouns and 5 adjectives from agent-ste src/ste/checks.gleam, MIT, picked by a count over 402,000 words of prose.
+// Both parts also hold entries from agent-ste src/ste/checks.gleam, MIT, picked by a count over 402,000 words of prose.
 
 export const ingNouns = [
 	'bearing',
